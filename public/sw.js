@@ -1,5 +1,5 @@
-const CACHE_NAME = "cpm-listings-v3";
-const ASSETS = ["./", "./index.html", "./manifest.json", "./styles.css", "./app.js"];
+const CACHE_NAME = "cpm-listings-v4";
+const ASSETS = ["./manifest.json", "./styles.css", "./app.js"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -26,6 +26,10 @@ self.addEventListener("fetch", (event) => {
   }
   const url = new URL(request.url);
   if (url.pathname.startsWith("/api/")) {
+    event.respondWith(fetch(request));
+    return;
+  }
+  if (request.mode === "navigate") {
     event.respondWith(fetch(request));
     return;
   }

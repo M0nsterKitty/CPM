@@ -91,7 +91,10 @@ const favoritesToggle = document.getElementById("favoritesToggle");
 let activeLang = localStorage.getItem(storageKeys.lang) || "en";
 let editingId = null;
 let favoritesOnly = false;
-let listingsCache = [];
+const initialListings = Array.isArray(window.__INITIAL_LISTINGS__)
+  ? window.__INITIAL_LISTINGS__
+  : null;
+let listingsCache = initialListings || [];
 
 const apiHeaders = { "Content-Type": "application/json" };
 
@@ -486,6 +489,9 @@ document.querySelectorAll(".lang-switch button").forEach((button) => {
 });
 
 const init = async () => {
+  if (initialListings) {
+    updateTexts();
+  }
   await fetchListings();
   updateTexts();
 };
