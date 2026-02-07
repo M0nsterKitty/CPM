@@ -20,5 +20,14 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
+  const { request } = event;
+  if (request.method !== "GET") {
+    return;
+  }
+  const url = new URL(request.url);
+  if (url.pathname.startsWith("/api/")) {
+    event.respondWith(fetch(request));
+    return;
+  }
+  event.respondWith(caches.match(request).then((cached) => cached || fetch(request)));
 });
