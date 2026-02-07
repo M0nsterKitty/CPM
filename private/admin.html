@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d0f13" />
+  <title>CPM Admin Paneli</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0d10;
+      --card: #141820;
+      --muted: #8a94a6;
+      --text: #e9edf5;
+      --accent: #4ad6ff;
+      --danger: #ff6b6b;
+      --warning: #ffb347;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(circle at top, #121621, #0a0c10 55%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(20px);
+      background: rgba(11, 13, 16, 0.85);
+      border-bottom: 1px solid var(--border);
+      padding: 16px clamp(16px, 4vw, 32px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    main {
+      padding: 24px clamp(16px, 4vw, 32px) 80px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .logo {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-size: 0.95rem;
+    }
+
+    .admin-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      background: #0f131a;
+      box-shadow: var(--shadow);
+    }
+
+    .admin-listings {
+      display: grid;
+      gap: 12px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .admin-listing {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+      background: rgba(17, 21, 28, 0.7);
+    }
+
+    .admin-listing header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .helper {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .admin-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .tag.danger {
+      color: var(--danger);
+      border-color: rgba(255, 107, 107, 0.4);
+    }
+
+    .tag.warning {
+      color: var(--warning);
+      border-color: rgba(255, 179, 71, 0.4);
+    }
+
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    button.danger {
+      color: #1b0f00;
+      background: rgba(255, 107, 107, 0.85);
+      border-color: rgba(255, 107, 107, 0.9);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #121826;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 60;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="logo">CPM Gizli Admin</span>
+    <span class="helper">Sadece gizli URL ile erişilebilir.</span>
+  </header>
+
+  <main>
+    <section class="admin-card">
+      <h2>Uygunsuz İlan Denetimi</h2>
+      <p class="helper">Tüm ilanlar aşağıda listelenir. Silme işlemleri yalnızca backend üzerinde uygulanır.</p>
+    </section>
+
+    <section class="admin-card">
+      <h3>Tüm İlanlar</h3>
+      <div class="admin-listings" id="adminListings"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const adminListingsEl = document.getElementById("adminListings");
+    const toast = document.getElementById("toast");
+
+    const setToast = (message) => {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2400);
+    };
+
+    const fetchListings = async () => {
+      const res = await fetch("/api/admin/listings", { credentials: "same-origin" });
+      if (!res.ok) {
+        throw new Error("İlanlar getirilemedi.");
+      }
+      return res.json();
+    };
+
+    const deleteListing = async (id) => {
+      const res = await fetch(`/api/admin/listings/${id}`, {
+        method: "DELETE",
+        credentials: "same-origin",
+      });
+      if (!res.ok) {
+        throw new Error("Silme işlemi başarısız.");
+      }
+    };
+
+    const renderListings = (listings) => {
+      adminListingsEl.innerHTML = "";
+      if (!listings.length) {
+        adminListingsEl.innerHTML = "<div class=\"helper\">Henüz ilan yok.</div>";
+        return;
+      }
+      listings.forEach((listing) => {
+        const item = document.createElement("div");
+        item.className = "admin-listing";
+        const tags = [];
+        if (listing.hidden) {
+          tags.push('<span class="tag danger">Gizli</span>');
+        }
+        if (listing.stats.reports >= 3) {
+          tags.push('<span class="tag warning">Bildirildi</span>');
+        }
+        item.innerHTML = `
+          <header>
+            <strong>${listing.carName}</strong>
+            <span class="helper">${listing.price}</span>
+          </header>
+          <div class="admin-tags">${tags.join("")}</div>
+          <div class="helper">${listing.contact}</div>
+          <div class="stats-row">
+            <span>👀 ${listing.stats.views}</span>
+            <span>❤️ ${listing.stats.likes}</span>
+            <span>⭐ ${listing.stats.favorites}</span>
+            <span>⚠️ ${listing.stats.reports}</span>
+          </div>
+          <div class="actions">
+            <button class="danger" data-id="${listing.id}">Sil</button>
+          </div>
+        `;
+        item.querySelector("button").addEventListener("click", async () => {
+          try {
+            await deleteListing(listing.id);
+            setToast("İlan silindi.");
+            const updated = await fetchListings();
+            renderListings(updated);
+          } catch (error) {
+            setToast(error.message);
+          }
+        });
+        adminListingsEl.appendChild(item);
+      });
+    };
+
+    const init = async () => {
+      try {
+        const listings = await fetchListings();
+        renderListings(listings);
+      } catch (error) {
+        setToast(error.message);
+      }
+    };
+
+    init();
+  </script>
+</body>
+</html>
