@@ -149,7 +149,7 @@ const hashValue = async (value) => {
 };
 
 const fetchListings = async () => {
-  const response = await fetch("/api/listings");
+  const response = await fetch("/api/listings", { cache: "no-store" });
   if (!response.ok) {
     listingsCache = [];
     return listingsCache;
@@ -576,6 +576,18 @@ const init = async () => {
 };
 
 init();
+
+setInterval(async () => {
+  await fetchListings();
+  renderListings();
+}, 30000);
+
+document.addEventListener("visibilitychange", async () => {
+  if (!document.hidden) {
+    await fetchListings();
+    renderListings();
+  }
+});
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

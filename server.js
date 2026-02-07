@@ -27,7 +27,12 @@ const readListings = () => {
   }
 };
 
+const ensureDataDir = () => {
+  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
+};
+
 const writeListings = (listings) => {
+  ensureDataDir();
   fs.writeFileSync(DATA_FILE, JSON.stringify(listings, null, 2));
 };
 
@@ -75,6 +80,7 @@ app.get(`/${ADMIN_SECRET_PATH}`, (req, res) => {
 });
 
 app.get("/api/listings", (req, res) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   const listings = readListings().map(withStats);
   res.json(listings);
 });
