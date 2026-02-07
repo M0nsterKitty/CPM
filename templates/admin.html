@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d0f13" />
+  <title>CPM Admin Control</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="left-actions">
+      <span class="logo">CPM Admin Control</span>
+    </div>
+    <div class="right-actions">
+      <div class="lang-switch" role="group" aria-label="Language switcher">
+        <button type="button" data-lang="en" class="active">EN</button>
+        <button type="button" data-lang="tr">TR</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="admin-panel" id="adminPanel">
+      <div class="admin-card">
+        <h3 id="adminContentTitle">Control Center</h3>
+        <p class="helper" id="adminSubtitle">Full visibility of every listing on CPM.</p>
+      </div>
+
+      <div class="admin-grid" style="margin-top:18px;">
+        <div class="admin-card">
+          <h4 id="logsTitle">Admin Logs</h4>
+          <div class="logs" id="adminLogs"></div>
+        </div>
+
+        <div class="admin-card">
+          <h4 id="adminListingsTitle">All Listings</h4>
+          <div class="admin-listings" id="adminListings"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/admin.js" defer></script>
+</body>
+</html>

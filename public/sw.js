@@ -1,5 +1,5 @@
-const CACHE_NAME = "cpm-listings-v2";
-const ASSETS = ["./", "./index.html", "./manifest.json"];
+const CACHE_NAME = "cpm-listings-v3";
+const ASSETS = ["./", "./index.html", "./manifest.json", "./styles.css", "./app.js"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
