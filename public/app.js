@@ -312,6 +312,7 @@ const removeListing = async (id) => {
     return;
   }
   await deleteListing(id);
+  await fetchListings();
   renderListings();
   setToast(translations[activeLang].removed);
 };
@@ -468,6 +469,7 @@ listingForm.addEventListener("submit", async (event) => {
     });
     setToast(translations[activeLang].created);
   }
+  await fetchListings();
   closeModal();
   renderListings();
 });
