@@ -91,10 +91,7 @@ const favoritesToggle = document.getElementById("favoritesToggle");
 let activeLang = localStorage.getItem(storageKeys.lang) || "en";
 let editingId = null;
 let favoritesOnly = false;
-const initialListings = Array.isArray(window.__INITIAL_LISTINGS__)
-  ? window.__INITIAL_LISTINGS__
-  : null;
-let listingsCache = initialListings || [];
+let listingsCache = [];
 
 const apiHeaders = { "Content-Type": "application/json" };
 
@@ -342,21 +339,28 @@ const renderListings = () => {
   }
 
   emptyState.style.display = "none";
-  visibleListings.forEach((listing) => {
+  const cards = visibleListings.map((listing) => {
     trackView(listing.id);
+    const title = listing.carName?.trim() || "Untitled listing";
+    const price = listing.price?.trim() || "Price on request";
+    const contact = listing.contact?.trim() || "Contact seller for details.";
+    const imageUrl =
+      listing.imageUrl?.trim() ||
+      "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='480'><rect width='100%25' height='100%25' fill='%23141820'/><text x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23a6b0c3' font-family='Arial' font-size='28'>No image</text></svg>";
+    const stats = listing.stats || { views: 0, likes: 0, favorites: 0, reports: 0 };
     const card = document.createElement("article");
     card.className = "card";
     card.innerHTML = `
-      <img src="${listing.imageUrl}" alt="${listing.carName}" loading="lazy" />
+      <img src="${imageUrl}" alt="${title}" loading="lazy" />
       <div class="card-body">
-        <div class="card-title">${listing.carName}</div>
-        <div class="price">${listing.price}</div>
-        <div class="contact">${listing.contact}</div>
+        <div class="card-title">${title}</div>
+        <div class="price">${price}</div>
+        <div class="contact">${contact}</div>
         <div class="stats-row">
-          <span>👀 ${listing.stats.views} ${translations[activeLang].statsViews}</span>
-          <span>❤️ ${listing.stats.likes} ${translations[activeLang].statsLikes}</span>
-          <span>⭐ ${listing.stats.favorites} ${translations[activeLang].statsFavorites}</span>
-          <span>⚠️ ${listing.stats.reports} ${translations[activeLang].statsReports}</span>
+          <span>👀 ${stats.views} ${translations[activeLang].statsViews}</span>
+          <span>❤️ ${stats.likes} ${translations[activeLang].statsLikes}</span>
+          <span>⭐ ${stats.favorites} ${translations[activeLang].statsFavorites}</span>
+          <span>⚠️ ${stats.reports} ${translations[activeLang].statsReports}</span>
         </div>
         <div class="card-actions"></div>
       </div>
@@ -401,8 +405,9 @@ const renderListings = () => {
 
       actions.append(editBtn, deleteBtn);
     }
-    feed.appendChild(card);
+    return card;
   });
+  cards.forEach((card) => feed.appendChild(card));
 };
 
 const updateTexts = () => {
@@ -489,9 +494,6 @@ document.querySelectorAll(".lang-switch button").forEach((button) => {
 });
 
 const init = async () => {
-  if (initialListings) {
-    updateTexts();
-  }
   await fetchListings();
   updateTexts();
 };
