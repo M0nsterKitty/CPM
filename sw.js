@@ -1,4 +1,4 @@
-const CACHE_NAME = "cpm-listings-v1";
+const CACHE_NAME = "cpm-listings-v2";
 const ASSETS = ["./", "./index.html", "./manifest.json"];
 
 self.addEventListener("install", (event) => {
@@ -20,7 +20,5 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
-  );
+  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
 });
