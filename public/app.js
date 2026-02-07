@@ -28,11 +28,6 @@ const translations = {
     alreadyReported: "You already reported this listing.",
     reported: "Listing reported.",
     hiddenReport: "Listing hidden after reports.",
-    spamCooldown: "Slow down — please wait before posting again.",
-    spamLimit: "Listing limit reached. Please try later.",
-    spamDuplicate: "Repeated content detected. Please vary your listing.",
-    spamFast: "Form submitted too quickly. Please slow down.",
-    spamBlocked: "Listing creation temporarily blocked.",
     statsViews: "Views",
     statsLikes: "Likes",
     statsFavorites: "Favorites",
@@ -67,11 +62,6 @@ const translations = {
     alreadyReported: "Bu ilanı zaten bildirdin.",
     reported: "İlan bildirildi.",
     hiddenReport: "İlan, bildirimlerden sonra gizlendi.",
-    spamCooldown: "Yavaşla — tekrar paylaşmak için bekle.",
-    spamLimit: "İlan limitine ulaştın. Daha sonra tekrar dene.",
-    spamDuplicate: "Tekrarlanan içerik algılandı. Lütfen ilanını çeşitlendir.",
-    spamFast: "Form çok hızlı gönderildi. Lütfen yavaşla.",
-    spamBlocked: "İlan oluşturma geçici olarak engellendi.",
     statsViews: "Görüntülenme",
     statsLikes: "Beğeni",
     statsFavorites: "Favori",
@@ -86,16 +76,6 @@ const storageKeys = {
   favorites: "cpm_favorites",
   reports: "cpm_reports",
   views: "cpm_views",
-  submissions: "cpm_submissions",
-};
-
-const spamConfig = {
-  maxPerWindow: 5,
-  windowMs: 60 * 60 * 1000,
-  cooldownMs: 60 * 1000,
-  minFormMs: 2500,
-  blockMs: 5 * 60 * 1000,
-  duplicateLimit: 2,
 };
 
 const REPORT_THRESHOLD = 3;
@@ -110,7 +90,6 @@ const favoritesToggle = document.getElementById("favoritesToggle");
 
 let activeLang = localStorage.getItem(storageKeys.lang) || "en";
 let editingId = null;
-let modalOpenedAt = 0;
 let favoritesOnly = false;
 let listingsCache = [];
 
@@ -287,59 +266,6 @@ const reportListing = (listingId) => {
   renderListings();
 };
 
-const getSubmissionState = () => {
-  const stored = localStorage.getItem(storageKeys.submissions);
-  return stored
-    ? JSON.parse(stored)
-    : {
-        timestamps: [],
-        contents: [],
-        lastSubmission: 0,
-        blockUntil: 0,
-      };
-};
-
-const saveSubmissionState = (state) => {
-  localStorage.setItem(storageKeys.submissions, JSON.stringify(state));
-};
-
-const checkSpam = (contentSignature, formDuration) => {
-  const state = getSubmissionState();
-  const now = Date.now();
-
-  if (state.blockUntil && now < state.blockUntil) {
-    return translations[activeLang].spamBlocked;
-  }
-
-  if (now - state.lastSubmission < spamConfig.cooldownMs) {
-    return translations[activeLang].spamCooldown;
-  }
-
-  const recent = state.timestamps.filter((timestamp) => now - timestamp < spamConfig.windowMs);
-  if (recent.length >= spamConfig.maxPerWindow) {
-    state.blockUntil = now + spamConfig.blockMs;
-    saveSubmissionState({ ...state, timestamps: recent });
-    return translations[activeLang].spamLimit;
-  }
-
-  if (formDuration < spamConfig.minFormMs) {
-    return translations[activeLang].spamFast;
-  }
-
-  const recentContents = state.contents.slice(0, spamConfig.duplicateLimit);
-  if (recentContents.filter((entry) => entry === contentSignature).length >= 1) {
-    state.blockUntil = now + spamConfig.blockMs;
-    saveSubmissionState(state);
-    return translations[activeLang].spamDuplicate;
-  }
-
-  state.timestamps = [now, ...recent].slice(0, spamConfig.maxPerWindow + 2);
-  state.lastSubmission = now;
-  state.contents = [contentSignature, ...state.contents].slice(0, 6);
-  saveSubmissionState(state);
-  return null;
-};
-
 const openModal = (listing = null) => {
   editingId = listing ? listing.id : null;
   modal.classList.add("open");
@@ -351,7 +277,6 @@ const openModal = (listing = null) => {
   listingForm.imageUrl.value = listing?.imageUrl || "";
   listingForm.contact.value = listing?.contact || "";
   listingForm.pin.value = "";
-  modalOpenedAt = Date.now();
 };
 
 const closeModal = () => {
@@ -514,18 +439,6 @@ favoritesToggle.addEventListener("click", () => {
 listingForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const deviceId = getDeviceId();
-
-  const contentSignature = [
-    listingForm.imageUrl.value.trim(),
-    listingForm.price.value.trim(),
-    listingForm.contact.value.trim(),
-  ].join("|");
-
-  const spamMessage = checkSpam(contentSignature, Date.now() - modalOpenedAt);
-  if (spamMessage) {
-    setToast(spamMessage);
-    return;
-  }
 
   const pinValue = listingForm.pin.value.trim();
   const pinHash = pinValue ? await hashValue(pinValue) : null;
