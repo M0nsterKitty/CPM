@@ -127,6 +127,13 @@ const renderAdminPage = (listings) => {
   `;
 };
 
+const renderHomePage = (listings) => {
+  const template = fs.readFileSync(path.join(__dirname, "public", "index.html"), "utf-8");
+  const payload = JSON.stringify(listings).replace(/</g, "\\u003c");
+  const injection = `<script>window.__INITIAL_LISTINGS__=${payload};</script>`;
+  return template.replace("</body>", `${injection}\n</body>`);
+};
+
 const getCookies = (req) => {
   const header = req.headers.cookie;
   if (!header) {
@@ -158,6 +165,12 @@ app.get(`/${ADMIN_SECRET_PATH}`, (req, res) => {
   });
   const listings = readListings().map(withStats);
   res.send(renderAdminPage(listings));
+});
+
+app.get("/", (req, res) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  const listings = readListings().map(withStats);
+  res.send(renderHomePage(listings));
 });
 
 app.get("/api/listings", (req, res) => {
