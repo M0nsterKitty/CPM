@@ -15,6 +15,8 @@
       --text: #e9edf5;
       --accent: #4ad6ff;
       --accent-2: #ff5bc1;
+      --warning: #ffb347;
+      --danger: #ff6b6b;
       --border: rgba(255, 255, 255, 0.08);
       --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
     }
@@ -52,6 +54,14 @@
       gap: 12px;
     }
 
+    .right-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
     .logo {
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -70,6 +80,9 @@
       font-size: 0.9rem;
       cursor: pointer;
       transition: transform 0.2s ease, border 0.2s ease, background 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .btn:hover {
@@ -79,6 +92,38 @@
 
     .btn:active {
       transform: scale(0.98);
+    }
+
+    .btn.primary {
+      background: rgba(74, 214, 255, 0.15);
+      border-color: rgba(74, 214, 255, 0.4);
+    }
+
+    .btn.warning {
+      color: #1b0f00;
+      background: rgba(255, 179, 71, 0.85);
+      border-color: rgba(255, 179, 71, 0.9);
+    }
+
+    .chip-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .chip-toggle.active {
+      color: var(--text);
+      background: rgba(255, 91, 193, 0.2);
+      border-color: rgba(255, 91, 193, 0.45);
     }
 
     .lang-switch {
@@ -184,9 +229,24 @@
       line-height: 1.4;
     }
 
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .stats-row span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .card-actions {
       display: flex;
-      gap: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-top: 6px;
     }
 
@@ -199,11 +259,32 @@
       cursor: pointer;
       font-size: 0.8rem;
       font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
     }
 
     .ghost:hover {
       color: var(--text);
       border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .ghost.active {
+      color: var(--accent-2);
+      border-color: rgba(255, 91, 193, 0.45);
+    }
+
+    .ghost.like.active {
+      color: #ff7aa2;
+    }
+
+    .ghost.report {
+      color: var(--warning);
+    }
+
+    .ghost.danger {
+      color: var(--danger);
     }
 
     .empty {
@@ -233,7 +314,7 @@
       background: #11151c;
       border-radius: 24px;
       padding: 24px;
-      width: min(520px, 100%);
+      width: min(540px, 100%);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       animation: floatIn 0.4s ease;
@@ -270,7 +351,8 @@
       margin-bottom: 6px;
     }
 
-    input {
+    input,
+    textarea {
       width: 100%;
       padding: 12px 14px;
       border-radius: 12px;
@@ -280,9 +362,15 @@
       font-size: 0.95rem;
     }
 
-    input:focus {
+    input:focus,
+    textarea:focus {
       outline: 2px solid rgba(74, 214, 255, 0.35);
       border-color: rgba(74, 214, 255, 0.45);
+    }
+
+    .helper {
+      font-size: 0.78rem;
+      color: var(--muted);
     }
 
     .form-actions {
@@ -312,6 +400,117 @@
       transform: translateY(0);
     }
 
+    .admin-panel {
+      margin-top: 32px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      background: rgba(17, 21, 28, 0.95);
+      box-shadow: var(--shadow);
+    }
+
+    .admin-panel.hidden {
+      display: none;
+    }
+
+    .admin-panel h3 {
+      margin-bottom: 8px;
+    }
+
+    .admin-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 900px) {
+      .admin-grid {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+
+    .admin-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      background: #0f131a;
+    }
+
+    .admin-listings {
+      display: grid;
+      gap: 12px;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+
+    .admin-listing {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+      background: rgba(17, 21, 28, 0.7);
+    }
+
+    .admin-listing header {
+      position: static;
+      padding: 0;
+      border: none;
+      background: transparent;
+      backdrop-filter: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .tag.danger {
+      color: var(--danger);
+      border-color: rgba(255, 107, 107, 0.4);
+    }
+
+    .tag.warning {
+      color: var(--warning);
+      border-color: rgba(255, 179, 71, 0.4);
+    }
+
+    .logs {
+      max-height: 220px;
+      overflow-y: auto;
+      display: grid;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .chart {
+      width: 100%;
+      height: 260px;
+      background: #0d1118;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
     @keyframes floatIn {
       from {
         opacity: 0;
@@ -330,15 +529,61 @@
       <button class="btn" id="createBtn">Create</button>
       <span class="logo">CPM Drift Market</span>
     </div>
-    <div class="lang-switch" role="group" aria-label="Language switcher">
-      <button type="button" data-lang="en" class="active">EN</button>
-      <button type="button" data-lang="tr">TR</button>
+    <div class="right-actions">
+      <button class="chip-toggle" id="favoritesToggle" type="button">⭐ Favorites</button>
+      <div class="lang-switch" role="group" aria-label="Language switcher">
+        <button type="button" data-lang="en" class="active">EN</button>
+        <button type="button" data-lang="tr">TR</button>
+      </div>
     </div>
   </header>
 
   <main>
     <section class="feed" id="feed"></section>
     <div class="empty" id="emptyState"></div>
+
+    <section class="admin-panel hidden" id="adminPanel">
+      <div class="admin-card" id="adminGate">
+        <h3 id="adminTitle">Admin Panel</h3>
+        <p class="helper" id="adminHint">Enter the admin password to continue.</p>
+        <div style="display:grid; gap:10px; margin-top:12px;">
+          <input type="password" id="adminPassword" autocomplete="off" />
+          <button class="btn primary" id="adminLoginBtn">Verify</button>
+        </div>
+      </div>
+
+      <div class="admin-card hidden" id="adminContent">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h3 id="adminContentTitle">Control Center</h3>
+            <p class="helper" id="adminSubtitle">Full visibility of every listing on CPM.</p>
+          </div>
+          <button class="btn" id="adminLogoutBtn">Logout</button>
+        </div>
+
+        <div class="admin-grid" style="margin-top:18px;">
+          <div class="admin-card">
+            <h4 id="analyticsTitle">Analytics</h4>
+            <div class="filter-row" id="analyticsFilters">
+              <button class="chip-toggle active" data-range="daily">Daily</button>
+              <button class="chip-toggle" data-range="weekly">Weekly</button>
+              <button class="chip-toggle" data-range="monthly">Monthly</button>
+            </div>
+            <canvas class="chart" id="analyticsChart" width="600" height="260"></canvas>
+          </div>
+
+          <div class="admin-card">
+            <h4 id="logsTitle">Admin Logs</h4>
+            <div class="logs" id="adminLogs"></div>
+          </div>
+        </div>
+
+        <div class="admin-card" style="margin-top:20px;">
+          <h4 id="adminListingsTitle">All Listings</h4>
+          <div class="admin-listings" id="adminListings"></div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <div class="modal" id="modal">
@@ -364,6 +609,11 @@
           <label for="contact">Contact / Social</label>
           <input id="contact" name="contact" type="text" required />
         </div>
+        <div>
+          <label for="pin">Optional PIN</label>
+          <input id="pin" name="pin" type="password" inputmode="numeric" pattern="[0-9]*" />
+          <div class="helper" id="pinHelper">Leave blank to keep your listing open.</div>
+        </div>
         <div class="form-actions">
           <button type="button" class="ghost" id="cancelBtn">Cancel</button>
           <button type="submit" class="btn" id="submitBtn">Save</button>
@@ -388,11 +638,49 @@
         price: "Price (CPM)",
         imageUrl: "Image URL",
         contact: "Contact / Social",
+        pin: "Optional PIN",
+        pinHelper: "Leave blank to keep your listing open.",
         empty: "No listings yet. Tap Create to add the first ride.",
         created: "Listing created.",
         updated: "Listing updated.",
         removed: "Listing removed.",
         ownershipError: "You can only edit your own listings.",
+        pinPrompt: "Enter your listing PIN",
+        pinError: "Incorrect PIN.",
+        favoriteOnly: "⭐ Favorites",
+        favoriteOn: "⭐ Favorites only",
+        like: "Like",
+        favorite: "Favorite",
+        report: "Report",
+        alreadyReported: "You already reported this listing.",
+        reported: "Listing reported.",
+        hiddenReport: "Listing hidden after reports.",
+        spamCooldown: "Slow down — please wait before posting again.",
+        spamLimit: "Listing limit reached. Please try later.",
+        spamDuplicate: "Repeated content detected. Please vary your listing.",
+        spamFast: "Form submitted too quickly. Please slow down.",
+        spamBlocked: "Listing creation temporarily blocked.",
+        adminTitle: "Admin Panel",
+        adminHint: "Enter the admin password to continue.",
+        adminVerify: "Verify",
+        adminContentTitle: "Control Center",
+        adminSubtitle: "Full visibility of every listing on CPM.",
+        adminLogout: "Logout",
+        adminAnalytics: "Analytics",
+        adminLogs: "Admin Logs",
+        adminListings: "All Listings",
+        adminLoginFailed: "Admin access denied.",
+        adminLoginSuccess: "Admin access granted.",
+        adminDelete: "Force Delete",
+        adminHide: "Hide",
+        adminShow: "Show",
+        statsViews: "Views",
+        statsLikes: "Likes",
+        statsFavorites: "Favorites",
+        statsReports: "Reports",
+        hiddenTag: "Hidden",
+        reportedTag: "Reported",
+        ownedTag: "Owner",
       },
       tr: {
         create: "Oluştur",
@@ -406,11 +694,49 @@
         price: "Fiyat (CPM)",
         imageUrl: "Görsel URL",
         contact: "İletişim / Sosyal",
+        pin: "İsteğe Bağlı PIN",
+        pinHelper: "Boş bırakırsan ilan herkese açık olur.",
         empty: "Henüz ilan yok. İlk ilanı oluşturmak için Oluştur'a dokun.",
         created: "İlan oluşturuldu.",
         updated: "İlan güncellendi.",
         removed: "İlan silindi.",
         ownershipError: "Sadece kendi ilanlarını düzenleyebilirsin.",
+        pinPrompt: "İlan PIN'ini gir",
+        pinError: "PIN yanlış.",
+        favoriteOnly: "⭐ Favoriler",
+        favoriteOn: "⭐ Sadece favoriler",
+        like: "Beğen",
+        favorite: "Favori",
+        report: "Bildir",
+        alreadyReported: "Bu ilanı zaten bildirdin.",
+        reported: "İlan bildirildi.",
+        hiddenReport: "İlan, bildirimlerden sonra gizlendi.",
+        spamCooldown: "Yavaşla — tekrar paylaşmak için bekle.",
+        spamLimit: "İlan limitine ulaştın. Daha sonra tekrar dene.",
+        spamDuplicate: "Tekrarlanan içerik algılandı. Lütfen ilanını çeşitlendir.",
+        spamFast: "Form çok hızlı gönderildi. Lütfen yavaşla.",
+        spamBlocked: "İlan oluşturma geçici olarak engellendi.",
+        adminTitle: "Admin Paneli",
+        adminHint: "Devam etmek için admin şifresini gir.",
+        adminVerify: "Doğrula",
+        adminContentTitle: "Kontrol Merkezi",
+        adminSubtitle: "CPM'deki tüm ilanları gör.",
+        adminLogout: "Çıkış",
+        adminAnalytics: "Analitik",
+        adminLogs: "Admin Kayıtları",
+        adminListings: "Tüm İlanlar",
+        adminLoginFailed: "Admin erişimi reddedildi.",
+        adminLoginSuccess: "Admin erişimi onaylandı.",
+        adminDelete: "Zorla Sil",
+        adminHide: "Gizle",
+        adminShow: "Göster",
+        statsViews: "Görüntülenme",
+        statsLikes: "Beğeni",
+        statsFavorites: "Favori",
+        statsReports: "Bildirim",
+        hiddenTag: "Gizli",
+        reportedTag: "Bildirildi",
+        ownedTag: "Sahibi",
       },
     };
 
@@ -418,7 +744,28 @@
       listings: "cpm_listings",
       device: "cpm_device_id",
       lang: "cpm_lang",
+      likes: "cpm_likes",
+      favorites: "cpm_favorites",
+      reports: "cpm_reports",
+      views: "cpm_views",
+      logs: "cpm_admin_logs",
+      adminSession: "cpm_admin_session",
+      events: "cpm_events",
+      submissions: "cpm_submissions",
     };
+
+    const spamConfig = {
+      maxPerWindow: 5,
+      windowMs: 60 * 60 * 1000,
+      cooldownMs: 60 * 1000,
+      minFormMs: 2500,
+      blockMs: 5 * 60 * 1000,
+      duplicateLimit: 2,
+    };
+
+    const REPORT_THRESHOLD = 3;
+    const ADMIN_URL_ACTIVE = new URLSearchParams(window.location.search).get("admin") === "1" || window.location.hash === "#admin";
+    const ADMIN_PASSWORD_HASH = "9d1d1a2b7b2f0a7e79a6aaee7a6cb6c6a8f4b5d0c47e0a4f3a6b9d33de4b7c69";
 
     const feed = document.getElementById("feed");
     const emptyState = document.getElementById("emptyState");
@@ -426,9 +773,23 @@
     const listingForm = document.getElementById("listingForm");
     const toast = document.getElementById("toast");
     const modalTitle = document.getElementById("modalTitle");
+    const favoritesToggle = document.getElementById("favoritesToggle");
+
+    const adminPanel = document.getElementById("adminPanel");
+    const adminGate = document.getElementById("adminGate");
+    const adminContent = document.getElementById("adminContent");
+    const adminPasswordInput = document.getElementById("adminPassword");
+    const adminLoginBtn = document.getElementById("adminLoginBtn");
+    const adminLogoutBtn = document.getElementById("adminLogoutBtn");
+    const adminLogsEl = document.getElementById("adminLogs");
+    const adminListingsEl = document.getElementById("adminListings");
+    const analyticsChart = document.getElementById("analyticsChart");
+    const analyticsFilters = document.getElementById("analyticsFilters");
 
     let activeLang = localStorage.getItem(storageKeys.lang) || "en";
     let editingId = null;
+    let modalOpenedAt = 0;
+    let favoritesOnly = false;
 
     const getDeviceId = () => {
       let id = localStorage.getItem(storageKeys.device);
@@ -441,56 +802,224 @@
 
     const getListings = () => {
       const saved = localStorage.getItem(storageKeys.listings);
-      return saved ? JSON.parse(saved) : [];
+      const listings = saved ? JSON.parse(saved) : [];
+      return listings.map((listing) => ({
+        ...listing,
+        stats: {
+          views: listing.stats?.views || 0,
+          likes: listing.stats?.likes || 0,
+          favorites: listing.stats?.favorites || 0,
+          reports: listing.stats?.reports || 0,
+        },
+        hidden: Boolean(listing.hidden),
+      }));
     };
 
     const saveListings = (listings) => {
       localStorage.setItem(storageKeys.listings, JSON.stringify(listings));
     };
 
+    const getLocalList = (key) => {
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : [];
+    };
+
+    const setLocalList = (key, value) => {
+      localStorage.setItem(key, JSON.stringify(value));
+    };
+
+    const getEventStore = () => {
+      const stored = localStorage.getItem(storageKeys.events);
+      return stored
+        ? JSON.parse(stored)
+        : { listingEvents: [], viewEvents: [], reportEvents: [] };
+    };
+
+    const saveEventStore = (store) => {
+      localStorage.setItem(storageKeys.events, JSON.stringify(store));
+    };
+
+    const pushEvent = (type, listingId) => {
+      const store = getEventStore();
+      const entry = { id: crypto.randomUUID(), listingId, timestamp: Date.now() };
+      if (type === "listing") {
+        store.listingEvents.unshift(entry);
+      }
+      if (type === "view") {
+        store.viewEvents.unshift(entry);
+      }
+      if (type === "report") {
+        store.reportEvents.unshift(entry);
+      }
+      saveEventStore(store);
+    };
+
     const setToast = (message) => {
       toast.textContent = message;
       toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 2200);
+      setTimeout(() => toast.classList.remove("show"), 2400);
     };
 
-    const renderListings = () => {
+    const updateListings = (updater) => {
       const listings = getListings();
-      feed.innerHTML = "";
-      if (!listings.length) {
-        emptyState.style.display = "block";
-        emptyState.textContent = translations[activeLang].empty;
+      const updated = updater(listings);
+      saveListings(updated);
+      return updated;
+    };
+
+    const hashValue = async (value) => {
+      const encoded = new TextEncoder().encode(value);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
+      return Array.from(new Uint8Array(hashBuffer))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+    };
+
+    const trackView = (listingId) => {
+      const viewed = new Set(getLocalList(storageKeys.views));
+      if (viewed.has(listingId)) {
         return;
       }
-      emptyState.style.display = "none";
-      listings.forEach((listing) => {
-        const card = document.createElement("article");
-        card.className = "card";
-        card.innerHTML = `
-          <img src="${listing.imageUrl}" alt="${listing.carName}" loading="lazy" />
-          <div class="card-body">
-            <div class="card-title">${listing.carName}</div>
-            <div class="price">${listing.price}</div>
-            <div class="contact">${listing.contact}</div>
-            <div class="card-actions"></div>
-          </div>
-        `;
-        const actions = card.querySelector(".card-actions");
-        if (listing.ownerId === getDeviceId()) {
-          const editBtn = document.createElement("button");
-          editBtn.className = "ghost";
-          editBtn.textContent = translations[activeLang].edit;
-          editBtn.addEventListener("click", () => openModal(listing));
+      viewed.add(listingId);
+      setLocalList(storageKeys.views, Array.from(viewed));
+      updateListings((listings) =>
+        listings.map((listing) =>
+          listing.id === listingId
+            ? { ...listing, stats: { ...listing.stats, views: listing.stats.views + 1 } }
+            : listing
+        )
+      );
+      pushEvent("view", listingId);
+    };
 
-          const deleteBtn = document.createElement("button");
-          deleteBtn.className = "ghost";
-          deleteBtn.textContent = translations[activeLang].delete;
-          deleteBtn.addEventListener("click", () => removeListing(listing.id));
+    const toggleLike = (listingId) => {
+      const likes = new Set(getLocalList(storageKeys.likes));
+      const hasLiked = likes.has(listingId);
+      const updatedListings = updateListings((listings) =>
+        listings.map((listing) => {
+          if (listing.id !== listingId) {
+            return listing;
+          }
+          const delta = hasLiked ? -1 : 1;
+          return { ...listing, stats: { ...listing.stats, likes: listing.stats.likes + delta } };
+        })
+      );
+      if (hasLiked) {
+        likes.delete(listingId);
+      } else {
+        likes.add(listingId);
+      }
+      setLocalList(storageKeys.likes, Array.from(likes));
+      renderListings(updatedListings);
+    };
 
-          actions.append(editBtn, deleteBtn);
-        }
-        feed.appendChild(card);
-      });
+    const toggleFavorite = (listingId) => {
+      const favorites = new Set(getLocalList(storageKeys.favorites));
+      const hasFavorited = favorites.has(listingId);
+      const updatedListings = updateListings((listings) =>
+        listings.map((listing) => {
+          if (listing.id !== listingId) {
+            return listing;
+          }
+          const delta = hasFavorited ? -1 : 1;
+          return { ...listing, stats: { ...listing.stats, favorites: listing.stats.favorites + delta } };
+        })
+      );
+      if (hasFavorited) {
+        favorites.delete(listingId);
+      } else {
+        favorites.add(listingId);
+      }
+      setLocalList(storageKeys.favorites, Array.from(favorites));
+      renderListings(updatedListings);
+    };
+
+    const reportListing = (listingId) => {
+      const reports = new Set(getLocalList(storageKeys.reports));
+      if (reports.has(listingId)) {
+        setToast(translations[activeLang].alreadyReported);
+        return;
+      }
+      reports.add(listingId);
+      setLocalList(storageKeys.reports, Array.from(reports));
+      const updatedListings = updateListings((listings) =>
+        listings.map((listing) => {
+          if (listing.id !== listingId) {
+            return listing;
+          }
+          const newReports = listing.stats.reports + 1;
+          const shouldHide = newReports >= REPORT_THRESHOLD;
+          return {
+            ...listing,
+            hidden: listing.hidden || shouldHide,
+            stats: { ...listing.stats, reports: newReports },
+          };
+        })
+      );
+      pushEvent("report", listingId);
+      const listing = updatedListings.find((item) => item.id === listingId);
+      if (listing?.hidden) {
+        setToast(translations[activeLang].hiddenReport);
+      } else {
+        setToast(translations[activeLang].reported);
+      }
+      renderListings(updatedListings);
+      if (ADMIN_URL_ACTIVE && isAdminAuthenticated()) {
+        renderAdminPanel(updatedListings);
+      }
+    };
+
+    const getSubmissionState = () => {
+      const stored = localStorage.getItem(storageKeys.submissions);
+      return stored
+        ? JSON.parse(stored)
+        : {
+            timestamps: [],
+            contents: [],
+            lastSubmission: 0,
+            blockUntil: 0,
+          };
+    };
+
+    const saveSubmissionState = (state) => {
+      localStorage.setItem(storageKeys.submissions, JSON.stringify(state));
+    };
+
+    const checkSpam = (contentSignature, formDuration) => {
+      const state = getSubmissionState();
+      const now = Date.now();
+
+      if (state.blockUntil && now < state.blockUntil) {
+        return translations[activeLang].spamBlocked;
+      }
+
+      if (now - state.lastSubmission < spamConfig.cooldownMs) {
+        return translations[activeLang].spamCooldown;
+      }
+
+      const recent = state.timestamps.filter((timestamp) => now - timestamp < spamConfig.windowMs);
+      if (recent.length >= spamConfig.maxPerWindow) {
+        state.blockUntil = now + spamConfig.blockMs;
+        saveSubmissionState({ ...state, timestamps: recent });
+        return translations[activeLang].spamLimit;
+      }
+
+      if (formDuration < spamConfig.minFormMs) {
+        return translations[activeLang].spamFast;
+      }
+
+      const recentContents = state.contents.slice(0, spamConfig.duplicateLimit);
+      if (recentContents.filter((entry) => entry === contentSignature).length >= 1) {
+        state.blockUntil = now + spamConfig.blockMs;
+        saveSubmissionState(state);
+        return translations[activeLang].spamDuplicate;
+      }
+
+      state.timestamps = [now, ...recent].slice(0, spamConfig.maxPerWindow + 2);
+      state.lastSubmission = now;
+      state.contents = [contentSignature, ...state.contents].slice(0, 6);
+      saveSubmissionState(state);
+      return null;
     };
 
     const openModal = (listing = null) => {
@@ -503,6 +1032,8 @@
       listingForm.price.value = listing?.price || "";
       listingForm.imageUrl.value = listing?.imageUrl || "";
       listingForm.contact.value = listing?.contact || "";
+      listingForm.pin.value = "";
+      modalOpenedAt = Date.now();
     };
 
     const closeModal = () => {
@@ -511,7 +1042,7 @@
       editingId = null;
     };
 
-    const removeListing = (id) => {
+    const removeListing = async (id) => {
       const deviceId = getDeviceId();
       const listings = getListings();
       const target = listings.find((item) => item.id === id);
@@ -519,10 +1050,115 @@
         setToast(translations[activeLang].ownershipError);
         return;
       }
+      if (target?.pinHash && !(await verifyPin(target))) {
+        return;
+      }
       const updated = listings.filter((item) => item.id !== id);
       saveListings(updated);
-      renderListings();
+      renderListings(updated);
       setToast(translations[activeLang].removed);
+    };
+
+    const verifyPin = async (listing) => {
+      if (!listing?.pinHash) {
+        return true;
+      }
+      const input = window.prompt(translations[activeLang].pinPrompt);
+      if (!input) {
+        return false;
+      }
+      const hashed = await hashValue(input.trim());
+      if (hashed !== listing.pinHash) {
+        setToast(translations[activeLang].pinError);
+        return false;
+      }
+      return true;
+    };
+
+    const renderListings = (listingsOverride = null) => {
+      const listings = listingsOverride || getListings();
+      const favorites = new Set(getLocalList(storageKeys.favorites));
+      const likes = new Set(getLocalList(storageKeys.likes));
+      feed.innerHTML = "";
+
+      const visibleListings = listings.filter((listing) => {
+        if (listing.hidden) {
+          return false;
+        }
+        if (favoritesOnly && !favorites.has(listing.id)) {
+          return false;
+        }
+        return true;
+      });
+
+      if (!visibleListings.length) {
+        emptyState.style.display = "block";
+        emptyState.textContent = translations[activeLang].empty;
+        return;
+      }
+
+      emptyState.style.display = "none";
+      visibleListings.forEach((listing) => {
+        trackView(listing.id);
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${listing.imageUrl}" alt="${listing.carName}" loading="lazy" />
+          <div class="card-body">
+            <div class="card-title">${listing.carName}</div>
+            <div class="price">${listing.price}</div>
+            <div class="contact">${listing.contact}</div>
+            <div class="stats-row">
+              <span>👀 ${listing.stats.views} ${translations[activeLang].statsViews}</span>
+              <span>❤️ ${listing.stats.likes} ${translations[activeLang].statsLikes}</span>
+              <span>⭐ ${listing.stats.favorites} ${translations[activeLang].statsFavorites}</span>
+              <span>⚠️ ${listing.stats.reports} ${translations[activeLang].statsReports}</span>
+            </div>
+            <div class="card-actions"></div>
+          </div>
+        `;
+        const actions = card.querySelector(".card-actions");
+
+        const likeBtn = document.createElement("button");
+        likeBtn.className = `ghost like ${likes.has(listing.id) ? "active" : ""}`;
+        likeBtn.textContent = "❤️";
+        likeBtn.setAttribute("aria-label", translations[activeLang].like);
+        likeBtn.addEventListener("click", () => toggleLike(listing.id));
+
+        const favBtn = document.createElement("button");
+        favBtn.className = `ghost ${favorites.has(listing.id) ? "active" : ""}`;
+        favBtn.textContent = "⭐";
+        favBtn.setAttribute("aria-label", translations[activeLang].favorite);
+        favBtn.addEventListener("click", () => toggleFavorite(listing.id));
+
+        const reportBtn = document.createElement("button");
+        reportBtn.className = "ghost report";
+        reportBtn.textContent = "⚠️";
+        reportBtn.setAttribute("aria-label", translations[activeLang].report);
+        reportBtn.addEventListener("click", () => reportListing(listing.id));
+
+        actions.append(likeBtn, favBtn, reportBtn);
+
+        if (listing.ownerId === getDeviceId()) {
+          const editBtn = document.createElement("button");
+          editBtn.className = "ghost";
+          editBtn.textContent = translations[activeLang].edit;
+          editBtn.addEventListener("click", async () => {
+            if (listing.pinHash && !(await verifyPin(listing))) {
+              return;
+            }
+            openModal(listing);
+          });
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "ghost danger";
+          deleteBtn.textContent = translations[activeLang].delete;
+          deleteBtn.addEventListener("click", () => removeListing(listing.id));
+
+          actions.append(editBtn, deleteBtn);
+        }
+        feed.appendChild(card);
+      });
     };
 
     const updateTexts = () => {
@@ -533,10 +1169,230 @@
       document.querySelector("label[for='price']").textContent = translations[activeLang].price;
       document.querySelector("label[for='imageUrl']").textContent = translations[activeLang].imageUrl;
       document.querySelector("label[for='contact']").textContent = translations[activeLang].contact;
+      document.querySelector("label[for='pin']").textContent = translations[activeLang].pin;
+      document.getElementById("pinHelper").textContent = translations[activeLang].pinHelper;
+      favoritesToggle.textContent = favoritesOnly
+        ? translations[activeLang].favoriteOn
+        : translations[activeLang].favoriteOnly;
       modalTitle.textContent = editingId
         ? translations[activeLang].modalEditTitle
         : translations[activeLang].modalCreateTitle;
+
+      document.getElementById("adminTitle").textContent = translations[activeLang].adminTitle;
+      document.getElementById("adminHint").textContent = translations[activeLang].adminHint;
+      document.getElementById("adminLoginBtn").textContent = translations[activeLang].adminVerify;
+      document.getElementById("adminContentTitle").textContent = translations[activeLang].adminContentTitle;
+      document.getElementById("adminSubtitle").textContent = translations[activeLang].adminSubtitle;
+      document.getElementById("adminLogoutBtn").textContent = translations[activeLang].adminLogout;
+      document.getElementById("analyticsTitle").textContent = translations[activeLang].adminAnalytics;
+      document.getElementById("logsTitle").textContent = translations[activeLang].adminLogs;
+      document.getElementById("adminListingsTitle").textContent = translations[activeLang].adminListings;
+
       renderListings();
+      if (ADMIN_URL_ACTIVE && isAdminAuthenticated()) {
+        renderAdminPanel();
+      }
+    };
+
+    const logAdminAction = (action, listingId = null) => {
+      const logs = getLocalList(storageKeys.logs);
+      logs.unshift({
+        id: crypto.randomUUID(),
+        timestamp: Date.now(),
+        action,
+        listingId,
+      });
+      setLocalList(storageKeys.logs, logs.slice(0, 200));
+    };
+
+    const isAdminAuthenticated = () => {
+      return sessionStorage.getItem(storageKeys.adminSession) === "true";
+    };
+
+    const renderAdminLogs = () => {
+      const logs = getLocalList(storageKeys.logs);
+      adminLogsEl.innerHTML = logs
+        .slice(0, 60)
+        .map((entry) => {
+          const time = new Date(entry.timestamp).toLocaleString();
+          return `<div>• ${time} — ${entry.action}${entry.listingId ? ` (${entry.listingId})` : ""}</div>`;
+        })
+        .join("") || "<div>—</div>";
+    };
+
+    const renderAdminListings = (listings) => {
+      const deviceId = getDeviceId();
+      adminListingsEl.innerHTML = "";
+      listings.forEach((listing) => {
+        const item = document.createElement("div");
+        item.className = "admin-listing";
+        const tags = [];
+        if (listing.hidden) {
+          tags.push(`<span class="tag danger">${translations[activeLang].hiddenTag}</span>`);
+        }
+        if (listing.stats.reports >= REPORT_THRESHOLD) {
+          tags.push(`<span class="tag warning">${translations[activeLang].reportedTag}</span>`);
+        }
+        if (listing.ownerId === deviceId) {
+          tags.push(`<span class="tag">${translations[activeLang].ownedTag}</span>`);
+        }
+        item.innerHTML = `
+          <header>
+            <strong>${listing.carName}</strong>
+            <span class="helper">${listing.price}</span>
+          </header>
+          <div class="admin-tags">${tags.join("")}</div>
+          <div class="helper">${listing.contact}</div>
+          <div class="stats-row">
+            <span>👀 ${listing.stats.views}</span>
+            <span>❤️ ${listing.stats.likes}</span>
+            <span>⭐ ${listing.stats.favorites}</span>
+            <span>⚠️ ${listing.stats.reports}</span>
+          </div>
+          <div class="card-actions"></div>
+        `;
+        const actions = item.querySelector(".card-actions");
+        const visibilityBtn = document.createElement("button");
+        visibilityBtn.className = "ghost";
+        visibilityBtn.textContent = listing.hidden
+          ? translations[activeLang].adminShow
+          : translations[activeLang].adminHide;
+        visibilityBtn.addEventListener("click", () => {
+          const updatedListings = updateListings((all) =>
+            all.map((entry) =>
+              entry.id === listing.id ? { ...entry, hidden: !entry.hidden } : entry
+            )
+          );
+          logAdminAction("visibility_toggle", listing.id);
+          renderAdminPanel(updatedListings);
+          renderListings(updatedListings);
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "ghost danger";
+        deleteBtn.textContent = translations[activeLang].adminDelete;
+        deleteBtn.addEventListener("click", () => {
+          const updatedListings = updateListings((all) => all.filter((entry) => entry.id !== listing.id));
+          logAdminAction("force_delete", listing.id);
+          renderAdminPanel(updatedListings);
+          renderListings(updatedListings);
+        });
+
+        actions.append(visibilityBtn, deleteBtn);
+        adminListingsEl.appendChild(item);
+      });
+    };
+
+    const bucketEvents = (events, buckets, formatter) => {
+      const counts = Array(buckets.length).fill(0);
+      events.forEach((event) => {
+        const index = buckets.findIndex((bucket) => event.timestamp >= bucket.start && event.timestamp < bucket.end);
+        if (index >= 0) {
+          counts[index] += 1;
+        }
+      });
+      return counts.map((count, index) => ({ label: formatter(buckets[index].start), value: count }));
+    };
+
+    const getBuckets = (range) => {
+      const now = new Date();
+      if (range === "daily") {
+        return Array.from({ length: 7 }).map((_, idx) => {
+          const start = new Date(now);
+          start.setDate(now.getDate() - (6 - idx));
+          start.setHours(0, 0, 0, 0);
+          const end = new Date(start);
+          end.setDate(start.getDate() + 1);
+          return { start: start.getTime(), end: end.getTime() };
+        });
+      }
+      if (range === "weekly") {
+        return Array.from({ length: 6 }).map((_, idx) => {
+          const start = new Date(now);
+          start.setDate(now.getDate() - (5 - idx) * 7);
+          start.setHours(0, 0, 0, 0);
+          const end = new Date(start);
+          end.setDate(start.getDate() + 7);
+          return { start: start.getTime(), end: end.getTime() };
+        });
+      }
+      return Array.from({ length: 6 }).map((_, idx) => {
+        const start = new Date(now.getFullYear(), now.getMonth() - (5 - idx), 1);
+        const end = new Date(start.getFullYear(), start.getMonth() + 1, 1);
+        return { start: start.getTime(), end: end.getTime() };
+      });
+    };
+
+    const renderAnalytics = (range = "daily") => {
+      const store = getEventStore();
+      const buckets = getBuckets(range);
+      const formatter = (timestamp) =>
+        new Date(timestamp).toLocaleDateString(undefined, range === "monthly" ? { month: "short" } : { month: "short", day: "numeric" });
+
+      const listingCounts = bucketEvents(store.listingEvents, buckets, formatter);
+      const viewCounts = bucketEvents(store.viewEvents, buckets, formatter);
+      const reportCounts = bucketEvents(store.reportEvents, buckets, formatter);
+
+      const ctx = analyticsChart.getContext("2d");
+      ctx.clearRect(0, 0, analyticsChart.width, analyticsChart.height);
+
+      const padding = 40;
+      const chartWidth = analyticsChart.width - padding * 2;
+      const chartHeight = analyticsChart.height - padding * 2;
+      const maxValue = Math.max(
+        ...listingCounts.map((item) => item.value),
+        ...viewCounts.map((item) => item.value),
+        ...reportCounts.map((item) => item.value),
+        1
+      );
+
+      const drawLine = (data, color) => {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        data.forEach((point, index) => {
+          const x = padding + (index / (data.length - 1 || 1)) * chartWidth;
+          const y = padding + chartHeight - (point.value / maxValue) * chartHeight;
+          if (index === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.stroke();
+      };
+
+      ctx.fillStyle = "#8a94a6";
+      ctx.font = "12px sans-serif";
+      ctx.fillText("Listings", padding, 16);
+      ctx.fillStyle = "#4ad6ff";
+      ctx.fillText("Views", padding + 80, 16);
+      ctx.fillStyle = "#ffb347";
+      ctx.fillText("Reports", padding + 140, 16);
+
+      drawLine(listingCounts, "#e9edf5");
+      drawLine(viewCounts, "#4ad6ff");
+      drawLine(reportCounts, "#ffb347");
+
+      ctx.fillStyle = "#8a94a6";
+      listingCounts.forEach((point, index) => {
+        const x = padding + (index / (listingCounts.length - 1 || 1)) * chartWidth;
+        ctx.fillText(point.label, x - 10, analyticsChart.height - 10);
+      });
+    };
+
+    const renderAdminPanel = (listingsOverride = null) => {
+      if (!ADMIN_URL_ACTIVE || !isAdminAuthenticated()) {
+        return;
+      }
+      const listings = listingsOverride || getListings();
+      renderAdminLogs();
+      renderAdminListings(listings);
+      renderAnalytics(document.querySelector("#analyticsFilters .active")?.dataset.range || "daily");
     };
 
     document.getElementById("createBtn").addEventListener("click", () => openModal());
@@ -548,10 +1404,32 @@
       }
     });
 
-    listingForm.addEventListener("submit", (event) => {
+    favoritesToggle.addEventListener("click", () => {
+      favoritesOnly = !favoritesOnly;
+      favoritesToggle.classList.toggle("active", favoritesOnly);
+      updateTexts();
+    });
+
+    listingForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const listings = getListings();
       const deviceId = getDeviceId();
+
+      const contentSignature = [
+        listingForm.imageUrl.value.trim(),
+        listingForm.price.value.trim(),
+        listingForm.contact.value.trim(),
+      ].join("|");
+
+      const spamMessage = checkSpam(contentSignature, Date.now() - modalOpenedAt);
+      if (spamMessage) {
+        setToast(spamMessage);
+        return;
+      }
+
+      const pinValue = listingForm.pin.value.trim();
+      const pinHash = pinValue ? await hashValue(pinValue) : null;
+
       if (editingId) {
         const index = listings.findIndex((item) => item.id === editingId);
         if (index === -1 || listings[index].ownerId !== deviceId) {
@@ -564,6 +1442,8 @@
           price: listingForm.price.value.trim(),
           imageUrl: listingForm.imageUrl.value.trim(),
           contact: listingForm.contact.value.trim(),
+          pinHash: pinHash || listings[index].pinHash,
+          updatedAt: Date.now(),
         };
         saveListings(listings);
         setToast(translations[activeLang].updated);
@@ -575,9 +1455,13 @@
           price: listingForm.price.value.trim(),
           imageUrl: listingForm.imageUrl.value.trim(),
           contact: listingForm.contact.value.trim(),
+          pinHash: pinHash || null,
           createdAt: Date.now(),
+          stats: { views: 0, likes: 0, favorites: 0, reports: 0 },
+          hidden: false,
         };
         saveListings([newListing, ...listings]);
+        pushEvent("listing", newListing.id);
         setToast(translations[activeLang].created);
       }
       closeModal();
@@ -595,7 +1479,53 @@
       });
     });
 
+    if (ADMIN_URL_ACTIVE) {
+      adminPanel.classList.remove("hidden");
+    }
+
+    adminLoginBtn?.addEventListener("click", async () => {
+      const input = adminPasswordInput.value.trim();
+      if (!input) {
+        return;
+      }
+      const hash = await hashValue(input);
+      if (hash === ADMIN_PASSWORD_HASH) {
+        sessionStorage.setItem(storageKeys.adminSession, "true");
+        adminGate.classList.add("hidden");
+        adminContent.classList.remove("hidden");
+        logAdminAction("login_success");
+        setToast(translations[activeLang].adminLoginSuccess);
+        renderAdminPanel();
+      } else {
+        logAdminAction("login_failure");
+        setToast(translations[activeLang].adminLoginFailed);
+      }
+      adminPasswordInput.value = "";
+    });
+
+    adminLogoutBtn?.addEventListener("click", () => {
+      sessionStorage.removeItem(storageKeys.adminSession);
+      adminGate.classList.remove("hidden");
+      adminContent.classList.add("hidden");
+    });
+
+    analyticsFilters?.addEventListener("click", (event) => {
+      const target = event.target.closest("button[data-range]");
+      if (!target) {
+        return;
+      }
+      analyticsFilters.querySelectorAll("button").forEach((btn) => btn.classList.remove("active"));
+      target.classList.add("active");
+      renderAnalytics(target.dataset.range);
+    });
+
     updateTexts();
+
+    if (ADMIN_URL_ACTIVE && isAdminAuthenticated()) {
+      adminGate.classList.add("hidden");
+      adminContent.classList.remove("hidden");
+      renderAdminPanel();
+    }
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
