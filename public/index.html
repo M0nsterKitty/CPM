@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d0f13" />
+  <title>CPM Car Listings</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="left-actions">
+      <button class="btn" id="createBtn">Create</button>
+      <span class="logo">CPM Drift Market</span>
+    </div>
+    <div class="right-actions">
+      <button class="chip-toggle" id="favoritesToggle" type="button">⭐ Favorites</button>
+      <div class="lang-switch" role="group" aria-label="Language switcher">
+        <button type="button" data-lang="en" class="active">EN</button>
+        <button type="button" data-lang="tr">TR</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="feed" id="feed"></section>
+    <div class="empty" id="emptyState"></div>
+
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Create Listing</h2>
+        <button class="close-btn" id="closeModal">×</button>
+      </div>
+      <form id="listingForm">
+        <div>
+          <label for="carName">Car Name</label>
+          <input id="carName" name="carName" type="text" required />
+        </div>
+        <div>
+          <label for="price">Price (CPM)</label>
+          <input id="price" name="price" type="text" required />
+        </div>
+        <div>
+          <label for="imageUrl">Image URL</label>
+          <input id="imageUrl" name="imageUrl" type="url" required />
+        </div>
+        <div>
+          <label for="contact">Contact / Social</label>
+          <input id="contact" name="contact" type="text" required />
+        </div>
+        <div>
+          <label for="pin">Optional PIN</label>
+          <input id="pin" name="pin" type="password" inputmode="numeric" pattern="[0-9]*" />
+          <div class="helper" id="pinHelper">Leave blank to keep your listing open.</div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="ghost" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn" id="submitBtn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
