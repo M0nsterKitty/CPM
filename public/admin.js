@@ -4,6 +4,8 @@ const translations = {
     adminSubtitle: "Full visibility of every listing on CPM.",
     adminLogs: "Admin Logs",
     adminListings: "All Listings",
+    adminReported: "Reported Listings",
+    adminReportedEmpty: "No reported listings.",
     adminDelete: "Force Delete",
     adminHide: "Hide",
     adminShow: "Show",
@@ -19,6 +21,8 @@ const translations = {
     adminSubtitle: "CPM'deki tüm ilanları gör.",
     adminLogs: "Admin Kayıtları",
     adminListings: "Tüm İlanlar",
+    adminReported: "Bildirilen İlanlar",
+    adminReportedEmpty: "Bildirilen ilan yok.",
     adminDelete: "Zorla Sil",
     adminHide: "Gizle",
     adminShow: "Göster",
@@ -40,6 +44,7 @@ const REPORT_THRESHOLD = 3;
 
 const adminLogsEl = document.getElementById("adminLogs");
 const adminListingsEl = document.getElementById("adminListings");
+const adminReportedEl = document.getElementById("adminReportedListings");
 const toast = document.getElementById("toast");
 
 let activeLang = localStorage.getItem(storageKeys.lang) || "en";
@@ -82,7 +87,7 @@ const renderAdminLogs = () => {
 };
 
 const fetchListings = async () => {
-  const response = await fetch("/api/listings");
+  const response = await fetch("/api/listings", { cache: "no-store" });
   if (!response.ok) {
     setToast(translations[activeLang].adminLoadError);
     return [];
@@ -160,6 +165,7 @@ const renderAdminListings = () => {
       await adminToggleVisibility(listing.id, !listing.hidden);
       logAdminAction("visibility_toggle", listing.id);
       renderAdminListings();
+      renderReportedListings();
       setToast(translations[activeLang].adminVisibility);
     });
 
@@ -170,6 +176,7 @@ const renderAdminListings = () => {
       await adminDeleteListing(listing.id);
       logAdminAction("force_delete", listing.id);
       renderAdminListings();
+      renderReportedListings();
       setToast(translations[activeLang].adminDeleted);
     });
 
@@ -178,13 +185,61 @@ const renderAdminListings = () => {
   });
 };
 
+const renderReportedListings = () => {
+  adminReportedEl.innerHTML = "";
+  const reportedListings = listingsCache.filter((listing) => (listing.stats?.reports || 0) > 0);
+  if (!reportedListings.length) {
+    adminReportedEl.innerHTML = `<div class="helper">${translations[activeLang].adminReportedEmpty}</div>`;
+    return;
+  }
+  reportedListings.forEach((listing) => {
+    const item = document.createElement("div");
+    item.className = "admin-listing";
+    item.innerHTML = `
+      <header>
+        <strong>${listing.carName}</strong>
+        <span class="helper">${listing.price}</span>
+      </header>
+      <div class="admin-tags">
+        <span class="tag warning">${translations[activeLang].reportedTag}</span>
+      </div>
+      <div class="helper">${listing.contact}</div>
+      <div class="stats-row">
+        <span>👀 ${listing.stats?.views || 0}</span>
+        <span>❤️ ${listing.stats?.likes || 0}</span>
+        <span>⭐ ${listing.stats?.favorites || 0}</span>
+        <span>⚠️ ${listing.stats?.reports || 0}</span>
+      </div>
+      <div class="card-actions"></div>
+    `;
+
+    const actions = item.querySelector(".card-actions");
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "ghost danger";
+    deleteBtn.textContent = translations[activeLang].adminDelete;
+    deleteBtn.addEventListener("click", async () => {
+      await adminDeleteListing(listing.id);
+      logAdminAction("force_delete", listing.id);
+      renderAdminListings();
+      renderReportedListings();
+      setToast(translations[activeLang].adminDeleted);
+    });
+
+    actions.append(deleteBtn);
+    adminReportedEl.appendChild(item);
+  });
+};
+
 const updateTexts = () => {
   document.getElementById("adminContentTitle").textContent = translations[activeLang].adminContentTitle;
   document.getElementById("adminSubtitle").textContent = translations[activeLang].adminSubtitle;
   document.getElementById("logsTitle").textContent = translations[activeLang].adminLogs;
   document.getElementById("adminListingsTitle").textContent = translations[activeLang].adminListings;
+  document.getElementById("adminReportedTitle").textContent = translations[activeLang].adminReported;
   renderAdminLogs();
   renderAdminListings();
+  renderReportedListings();
 };
 
 document.querySelectorAll(".lang-switch button").forEach((button) => {
