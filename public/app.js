@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const translations = {
   en: {
     create: "Create",
@@ -127,14 +130,17 @@ const hashValue = async (value) => {
     .join("");
 };
 
+const setListings = (nextListings) => {
+  listingsCache = Array.isArray(nextListings) ? nextListings : [];
+  return listingsCache;
+};
+
 const fetchListings = async () => {
   const response = await fetch("/api/listings", { cache: "no-store" });
   if (!response.ok) {
-    listingsCache = [];
-    return listingsCache;
+    return setListings([]);
   }
-  listingsCache = await response.json();
-  return listingsCache;
+  return setListings(await response.json());
 };
 
 const syncListings = async (responsePromise) => {
@@ -142,8 +148,7 @@ const syncListings = async (responsePromise) => {
   if (!response.ok) {
     return listingsCache;
   }
-  listingsCache = await response.json();
-  return listingsCache;
+  return setListings(await response.json());
 };
 
 const updateListingStats = (listingId, payload) =>
@@ -332,13 +337,10 @@ const renderListings = () => {
     return true;
   });
 
-  if (!visibleListings.length) {
-    emptyState.style.display = "block";
-    emptyState.textContent = translations[activeLang].empty;
-    return;
-  }
+  const hasVisibleListings = visibleListings.length > 0;
+  emptyState.style.display = hasVisibleListings ? "none" : "block";
+  emptyState.textContent = translations[activeLang].empty;
 
-  emptyState.style.display = "none";
   const cards = visibleListings.map((listing) => {
     trackView(listing.id);
     const title = listing.carName?.trim() || "Untitled listing";
@@ -477,7 +479,6 @@ listingForm.addEventListener("submit", async (event) => {
     });
     setToast(translations[activeLang].created);
   }
-  await fetchListings();
   closeModal();
   renderListings();
 });
