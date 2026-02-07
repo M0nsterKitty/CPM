@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d0f13" />
+  <title>CPM Car Listings</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0d10;
+      --card: #141820;
+      --muted: #8a94a6;
+      --text: #e9edf5;
+      --accent: #4ad6ff;
+      --accent-2: #ff5bc1;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(circle at top, #121621, #0a0c10 55%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(20px);
+      background: rgba(11, 13, 16, 0.85);
+      border-bottom: 1px solid var(--border);
+      padding: 16px clamp(16px, 4vw, 32px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .left-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-size: 0.95rem;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, border 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 999px;
+      padding: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .lang-switch button {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .lang-switch button.active {
+      background: rgba(74, 214, 255, 0.18);
+      color: var(--text);
+    }
+
+    main {
+      padding: 24px clamp(16px, 4vw, 32px) 80px;
+    }
+
+    .feed {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 720px) {
+      .feed {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1080px) {
+      .feed {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      animation: floatIn 0.5s ease;
+      transform-origin: center;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card:active {
+      transform: scale(0.99);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 45px rgba(0, 0, 0, 0.55);
+    }
+
+    .card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: #0f1218;
+    }
+
+    .card-body {
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .price {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(74, 214, 255, 0.12);
+      padding: 6px 12px;
+      border-radius: 999px;
+      width: fit-content;
+    }
+
+    .contact {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .ghost:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 60px 0;
+      border: 1px dashed var(--border);
+      border-radius: 24px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 4, 8, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 40;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #11151c;
+      border-radius: 24px;
+      padding: 24px;
+      width: min(520px, 100%);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      animation: floatIn 0.4s ease;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.2rem;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    input:focus {
+      outline: 2px solid rgba(74, 214, 255, 0.35);
+      border-color: rgba(74, 214, 255, 0.45);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #121826;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 60;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes floatIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="left-actions">
+      <button class="btn" id="createBtn">Create</button>
+      <span class="logo">CPM Drift Market</span>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language switcher">
+      <button type="button" data-lang="en" class="active">EN</button>
+      <button type="button" data-lang="tr">TR</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="feed" id="feed"></section>
+    <div class="empty" id="emptyState"></div>
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Create Listing</h2>
+        <button class="close-btn" id="closeModal">×</button>
+      </div>
+      <form id="listingForm">
+        <div>
+          <label for="carName">Car Name</label>
+          <input id="carName" name="carName" type="text" required />
+        </div>
+        <div>
+          <label for="price">Price (CPM)</label>
+          <input id="price" name="price" type="text" required />
+        </div>
+        <div>
+          <label for="imageUrl">Image URL</label>
+          <input id="imageUrl" name="imageUrl" type="url" required />
+        </div>
+        <div>
+          <label for="contact">Contact / Social</label>
+          <input id="contact" name="contact" type="text" required />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="ghost" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn" id="submitBtn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const translations = {
+      en: {
+        create: "Create",
+        edit: "Edit",
+        delete: "Delete",
+        save: "Save",
+        cancel: "Cancel",
+        modalCreateTitle: "Create Listing",
+        modalEditTitle: "Edit Listing",
+        carName: "Car Name",
+        price: "Price (CPM)",
+        imageUrl: "Image URL",
+        contact: "Contact / Social",
+        empty: "No listings yet. Tap Create to add the first ride.",
+        created: "Listing created.",
+        updated: "Listing updated.",
+        removed: "Listing removed.",
+        ownershipError: "You can only edit your own listings.",
+      },
+      tr: {
+        create: "Oluştur",
+        edit: "Düzenle",
+        delete: "Sil",
+        save: "Kaydet",
+        cancel: "İptal",
+        modalCreateTitle: "İlan Oluştur",
+        modalEditTitle: "İlanı Düzenle",
+        carName: "Araç Adı",
+        price: "Fiyat (CPM)",
+        imageUrl: "Görsel URL",
+        contact: "İletişim / Sosyal",
+        empty: "Henüz ilan yok. İlk ilanı oluşturmak için Oluştur'a dokun.",
+        created: "İlan oluşturuldu.",
+        updated: "İlan güncellendi.",
+        removed: "İlan silindi.",
+        ownershipError: "Sadece kendi ilanlarını düzenleyebilirsin.",
+      },
+    };
+
+    const storageKeys = {
+      listings: "cpm_listings",
+      device: "cpm_device_id",
+      lang: "cpm_lang",
+    };
+
+    const feed = document.getElementById("feed");
+    const emptyState = document.getElementById("emptyState");
+    const modal = document.getElementById("modal");
+    const listingForm = document.getElementById("listingForm");
+    const toast = document.getElementById("toast");
+    const modalTitle = document.getElementById("modalTitle");
+
+    let activeLang = localStorage.getItem(storageKeys.lang) || "en";
+    let editingId = null;
+
+    const getDeviceId = () => {
+      let id = localStorage.getItem(storageKeys.device);
+      if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem(storageKeys.device, id);
+      }
+      return id;
+    };
+
+    const getListings = () => {
+      const saved = localStorage.getItem(storageKeys.listings);
+      return saved ? JSON.parse(saved) : [];
+    };
+
+    const saveListings = (listings) => {
+      localStorage.setItem(storageKeys.listings, JSON.stringify(listings));
+    };
+
+    const setToast = (message) => {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2200);
+    };
+
+    const renderListings = () => {
+      const listings = getListings();
+      feed.innerHTML = "";
+      if (!listings.length) {
+        emptyState.style.display = "block";
+        emptyState.textContent = translations[activeLang].empty;
+        return;
+      }
+      emptyState.style.display = "none";
+      listings.forEach((listing) => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${listing.imageUrl}" alt="${listing.carName}" loading="lazy" />
+          <div class="card-body">
+            <div class="card-title">${listing.carName}</div>
+            <div class="price">${listing.price}</div>
+            <div class="contact">${listing.contact}</div>
+            <div class="card-actions"></div>
+          </div>
+        `;
+        const actions = card.querySelector(".card-actions");
+        if (listing.ownerId === getDeviceId()) {
+          const editBtn = document.createElement("button");
+          editBtn.className = "ghost";
+          editBtn.textContent = translations[activeLang].edit;
+          editBtn.addEventListener("click", () => openModal(listing));
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "ghost";
+          deleteBtn.textContent = translations[activeLang].delete;
+          deleteBtn.addEventListener("click", () => removeListing(listing.id));
+
+          actions.append(editBtn, deleteBtn);
+        }
+        feed.appendChild(card);
+      });
+    };
+
+    const openModal = (listing = null) => {
+      editingId = listing ? listing.id : null;
+      modal.classList.add("open");
+      modalTitle.textContent = listing
+        ? translations[activeLang].modalEditTitle
+        : translations[activeLang].modalCreateTitle;
+      listingForm.carName.value = listing?.carName || "";
+      listingForm.price.value = listing?.price || "";
+      listingForm.imageUrl.value = listing?.imageUrl || "";
+      listingForm.contact.value = listing?.contact || "";
+    };
+
+    const closeModal = () => {
+      modal.classList.remove("open");
+      listingForm.reset();
+      editingId = null;
+    };
+
+    const removeListing = (id) => {
+      const deviceId = getDeviceId();
+      const listings = getListings();
+      const target = listings.find((item) => item.id === id);
+      if (target && target.ownerId !== deviceId) {
+        setToast(translations[activeLang].ownershipError);
+        return;
+      }
+      const updated = listings.filter((item) => item.id !== id);
+      saveListings(updated);
+      renderListings();
+      setToast(translations[activeLang].removed);
+    };
+
+    const updateTexts = () => {
+      document.getElementById("createBtn").textContent = translations[activeLang].create;
+      document.getElementById("cancelBtn").textContent = translations[activeLang].cancel;
+      document.getElementById("submitBtn").textContent = translations[activeLang].save;
+      document.querySelector("label[for='carName']").textContent = translations[activeLang].carName;
+      document.querySelector("label[for='price']").textContent = translations[activeLang].price;
+      document.querySelector("label[for='imageUrl']").textContent = translations[activeLang].imageUrl;
+      document.querySelector("label[for='contact']").textContent = translations[activeLang].contact;
+      modalTitle.textContent = editingId
+        ? translations[activeLang].modalEditTitle
+        : translations[activeLang].modalCreateTitle;
+      renderListings();
+    };
+
+    document.getElementById("createBtn").addEventListener("click", () => openModal());
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    document.getElementById("cancelBtn").addEventListener("click", closeModal);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+
+    listingForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const listings = getListings();
+      const deviceId = getDeviceId();
+      if (editingId) {
+        const index = listings.findIndex((item) => item.id === editingId);
+        if (index === -1 || listings[index].ownerId !== deviceId) {
+          setToast(translations[activeLang].ownershipError);
+          return;
+        }
+        listings[index] = {
+          ...listings[index],
+          carName: listingForm.carName.value.trim(),
+          price: listingForm.price.value.trim(),
+          imageUrl: listingForm.imageUrl.value.trim(),
+          contact: listingForm.contact.value.trim(),
+        };
+        saveListings(listings);
+        setToast(translations[activeLang].updated);
+      } else {
+        const newListing = {
+          id: crypto.randomUUID(),
+          ownerId: deviceId,
+          carName: listingForm.carName.value.trim(),
+          price: listingForm.price.value.trim(),
+          imageUrl: listingForm.imageUrl.value.trim(),
+          contact: listingForm.contact.value.trim(),
+          createdAt: Date.now(),
+        };
+        saveListings([newListing, ...listings]);
+        setToast(translations[activeLang].created);
+      }
+      closeModal();
+      renderListings();
+    });
+
+    document.querySelectorAll(".lang-switch button").forEach((button) => {
+      button.addEventListener("click", () => {
+        activeLang = button.dataset.lang;
+        localStorage.setItem(storageKeys.lang, activeLang);
+        document.querySelectorAll(".lang-switch button").forEach((btn) =>
+          btn.classList.toggle("active", btn.dataset.lang === activeLang)
+        );
+        updateTexts();
+      });
+    });
+
+    updateTexts();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js");
+      });
+    }
+  </script>
+</body>
+</html>

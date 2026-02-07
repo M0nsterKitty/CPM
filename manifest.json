@@ -1,0 +1,20 @@
+{
+  "name": "CPM Car Listings",
+  "short_name": "CPM Listings",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0d10",
+  "theme_color": "#0d0f13",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='36' fill='%230b0d10'/%3E%3Cpath d='M40 120l18-44h76l18 44h-16l-8-18H64l-8 18H40zm28-34h56l-6-14H74l-6 14z' fill='%234ad6ff'/%3E%3Ctext x='96' y='150' text-anchor='middle' font-size='32' fill='%23e9edf5' font-family='Arial, sans-serif'%3ECPM%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%230b0d10'/%3E%3Cpath d='M110 320l48-118h196l48 118h-44l-22-50H176l-22 50h-44zm84-90h124l-12-30H206l-12 30z' fill='%234ad6ff'/%3E%3Ctext x='256' y='400' text-anchor='middle' font-size='88' fill='%23e9edf5' font-family='Arial, sans-serif'%3ECPM%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
